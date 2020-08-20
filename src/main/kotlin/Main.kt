@@ -18,16 +18,16 @@ fun main() {
         poblacion.sortBy { it.aptitud }
 
         // No pararemos hasta que todos los individuos sepan la combinacion
-        /*if (poblacion[poblacion.size-1].aptitud <= 0){
-            encontrado = true
-            break
-        }*/
-
-        // No pararemos hasta que el mejor individuo encuentre la combinacion
-        if (poblacion[0].aptitud <= 0){
+        if (poblacion[poblacion.size-1].aptitud <= 0){
             encontrado = true
             break
         }
+
+        // No pararemos hasta que el mejor individuo encuentre la combinacion
+        /*if (poblacion[0].aptitud <= 0){
+            encontrado = true
+            break
+        }*/
 
         val nuevaGeneracion = mutableListOf<Individuo>()
 
@@ -57,4 +57,5 @@ fun main() {
 
     val promedio = poblacion.sumByDouble { it.aptitud.toDouble() } / poblacion.size.toDouble()
     println("Generacion $generacion\t Cartas del mejor: ${poblacion[0].cromosoma}\t Aptitud del mejor: ${poblacion[0].aptitud}\t Aptitud promedia: ${promedio}")
+    println("\t\t\t\t Cartas del peor: ${poblacion[poblacion.size-1].cromosoma}")
 }
