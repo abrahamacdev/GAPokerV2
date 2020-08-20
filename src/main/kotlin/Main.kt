@@ -1,3 +1,5 @@
+import ga.Individuo
+
 fun main() {
 
     val tamanio_poblacion = 10
@@ -15,6 +17,13 @@ fun main() {
 
         poblacion.sortBy { it.aptitud }
 
+        // No pararemos hasta que todos los individuos sepan la combinacion
+        /*if (poblacion[poblacion.size-1].aptitud <= 0){
+            encontrado = true
+            break
+        }*/
+
+        // No pararemos hasta que el mejor individuo encuentre la combinacion
         if (poblacion[0].aptitud <= 0){
             encontrado = true
             break
@@ -39,12 +48,13 @@ fun main() {
 
         poblacion = nuevaGeneracion
 
-        println("Generacion $generacion\t Cadena: ${poblacion[0].cromosoma}\t Aptitud: ${poblacion[0].aptitud}")
-        println("Cadena del Peor Individuo ${poblacion[poblacion.size-1].cromosoma}\t Aptitud: ${poblacion[poblacion.size-1].aptitud}")
+        val promedio = poblacion.sumByDouble { it.aptitud.toDouble() } / poblacion.size.toDouble()
+
+        println("Generacion $generacion\t Cartas del mejor: ${poblacion[0].cromosoma}\t Aptitud del mejor: ${poblacion[0].aptitud}\t Aptitud promedia: ${promedio}")
         println("----------------------")
         generacion++
     }
 
-    println("Generacion $generacion\t Cadena: ${poblacion[0].cromosoma}\t Aptitud: ${poblacion[0].aptitud}")
-    println("Cadena del Peor Individuo ${poblacion[poblacion.size-1].cromosoma}\t Aptitud: ${poblacion[poblacion.size-1].aptitud}")
+    val promedio = poblacion.sumByDouble { it.aptitud.toDouble() } / poblacion.size.toDouble()
+    println("Generacion $generacion\t Cartas del mejor: ${poblacion[0].cromosoma}\t Aptitud del mejor: ${poblacion[0].aptitud}\t Aptitud promedia: ${promedio}")
 }

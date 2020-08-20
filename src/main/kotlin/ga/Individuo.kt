@@ -1,20 +1,30 @@
-class Individuo(val cromosoma: List<Int>) {
+package ga
+
+import modelo.Carta
+import utils.Constantes
+
+class Individuo(val cromosoma: List<Carta>) {
 
     // TODO MOdificar
     val aptitud = calcularAptitudExperimental()
 
     companion object {
 
-        fun crear_gen_aleatorio(): Int {
-            val pos = Math.random() * Constantes.GENES.size
-            return Constantes.GENES[pos.toInt()]
+        fun crear_gen_aleatorio(noRepetir: Set<Carta> = mutableSetOf()): Carta {
+
+            // Nos quedamos con todos los genes que no coincidan con los del set "noRepetir"
+            val noRepetidas = Constantes.GENES.filterNot { noRepetir.contains(it) }
+
+            val pos = Math.random() * noRepetidas.size
+            return noRepetidas[pos.toInt()]
         }
 
-        fun crear_genoma_aleatorio(): List<Int> {
+        fun crear_genoma_aleatorio(): List<Carta> {
 
-            var final = mutableListOf<Int>()
+            var final = mutableListOf<Carta>()
+
             Constantes.OBJETIVO.forEach {
-                final.add(crear_gen_aleatorio())
+                final.add(crear_gen_aleatorio(final.toHashSet()))
             }
 
             return final.toList()
@@ -23,24 +33,32 @@ class Individuo(val cromosoma: List<Int>) {
 
     fun cruzar(otro: Individuo): Individuo {
 
-        var cromosoma_hijo = mutableListOf<Int>()
+        var cromosoma_hijo = hashSetOf<Carta>()
         for (i in 0 until cromosoma.size){
 
             val rnd = Math.random()
+            var nuevaCarta: Carta? = null
 
             if (rnd < 0.45){
 
-                cromosoma_hijo.add(cromosoma.get(i))
+                nuevaCarta = cromosoma.get(i)
             } else if (rnd < 0.9){
 
-                cromosoma_hijo.add(otro.cromosoma.get(i))
+                nuevaCarta = otro.cromosoma.get(i)
             } else {
 
-                cromosoma_hijo.add(crear_gen_aleatorio())
+                nuevaCarta = crear_gen_aleatorio(cromosoma_hijo)
             }
+
+            // Comprobamos si se va ha añadir una carta repetida y la cambiamos es caso de que sea repetida
+            if (cromosoma_hijo.contains(nuevaCarta)){
+                nuevaCarta = crear_gen_aleatorio(cromosoma_hijo)
+            }
+
+            cromosoma_hijo.add(nuevaCarta)
         }
 
-        return Individuo(cromosoma_hijo)
+        return Individuo(cromosoma_hijo.toList())
     }
 
     /**
