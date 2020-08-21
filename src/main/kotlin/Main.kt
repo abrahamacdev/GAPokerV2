@@ -1,61 +1,85 @@
+import com.github.ajalt.mordant.TermColors
 import ga.Individuo
+import modelo.Carta
+import modelo.Palo
 
 fun main() {
 
-    val tamanio_poblacion = 10
+    // Revisar 3 cosas:
+    // 1º Condicion para que paremos de iterar
+    // 2º Como ordenamos la lista (GA.evolucionar)
+    // 3º Funcion de aptitud utilizada
 
-    var encontrado = false
-    var generacion = 1
-    var poblacion = mutableListOf<Individuo>()
 
-    for (i in 0 until tamanio_poblacion){
-        val genoma = Individuo.crear_genoma_aleatorio()
-        poblacion.add(Individuo(genoma))
-    }
+    val ga = GA(tamanioPoblacion = 10)
+    //ga.loggear = true
+    ga.evolucionar(inicio = {poblacionOrdenada ->
 
-    while (!encontrado){
+        val promedio = poblacionOrdenada.sumByDouble { it.aptitud.toDouble() } / poblacionOrdenada.size.toDouble()
+        val termColors = TermColors()
+        val titulo = with(termColors){
+            (bold + blue)
+        }
+        val estrellas = with(termColors){
+            (italic + green)
+        }
 
-        poblacion.sortBy { it.aptitud }
+        println("${estrellas("****************************************")}")
+        println("\t\t${titulo("Resumen Inicial")}")
+        println("Cartas del mejor: ${poblacionOrdenada[0].cartas}")
+        println("Cartas del peor: ${poblacionOrdenada[poblacionOrdenada.size-1].cartas}")
+        println("Aptitud del mejor: ${poblacionOrdenada[0].aptitud}")
+        println("Aptitud del peor: ${poblacionOrdenada[poblacionOrdenada.size-1].aptitud}")
+        println("Aptitud promedia: ${promedio}")
+        println("${estrellas("****************************************")}")
 
+    }, condicion = { poblacionOrdenada ->
+
+        /********** AptitudV3 ****************/
         // No pararemos hasta que todos los individuos sepan la combinacion
-        if (poblacion[poblacion.size-1].aptitud <= 0){
-            encontrado = true
-            break
+        /*if (poblacionOrdenada[poblacionOrdenada.size-1].aptitud <= 0){
+            return@evolucionar true
+        }*/
+
+        // No pararemos hasta que el mejor individuo encuentre la combinacion
+        /*if (poblacionOrdenada[0].aptitud <= 0){
+            return@evolucionar true
+        }*/
+        /*********************************/
+
+
+        /********** Aptitud Inversa ****************/
+        // No pararemos hasta que todos los individuos sepan la combinacion
+        if (poblacionOrdenada[poblacionOrdenada.size-1].aptitud >= 100){
+            return@evolucionar true
         }
 
         // No pararemos hasta que el mejor individuo encuentre la combinacion
-        /*if (poblacion[0].aptitud <= 0){
-            encontrado = true
-            break
+        /*if (poblacionOrdenada[0].aptitud >= 100){
+            return@evolucionar true
         }*/
+        /*********************************/
 
-        val nuevaGeneracion = mutableListOf<Individuo>()
-
-        val numElite = tamanio_poblacion * 0.1
-        val elite = poblacion.take(numElite.toInt())
-        nuevaGeneracion.addAll(elite)
-
-        val numHijos = tamanio_poblacion * 0.9
-        val numPadres = tamanio_poblacion * 0.5
-        val padres = poblacion.take(numPadres.toInt())
-        for (i in 0 until numHijos.toInt()){
-            val padre1 = padres.get((Math.random() * padres.size).toInt())
-            val padre2 = padres.get((Math.random() * padres.size).toInt())
-
-            val hijo = padre1.cruzar(padre2)
-            nuevaGeneracion.add(hijo)
-        }
-
-        poblacion = nuevaGeneracion
+        false
+    }, final = { poblacion, rondas ->
 
         val promedio = poblacion.sumByDouble { it.aptitud.toDouble() } / poblacion.size.toDouble()
+        val termColors = TermColors()
+        val titulo = with(termColors){
+            (bold + blue)
+        }
+        val estrellas = with(termColors){
+            (italic + green)
+        }
 
-        println("Generacion $generacion\t Cartas del mejor: ${poblacion[0].cromosoma}\t Aptitud del mejor: ${poblacion[0].aptitud}\t Aptitud promedia: ${promedio}")
-        println("----------------------")
-        generacion++
-    }
-
-    val promedio = poblacion.sumByDouble { it.aptitud.toDouble() } / poblacion.size.toDouble()
-    println("Generacion $generacion\t Cartas del mejor: ${poblacion[0].cromosoma}\t Aptitud del mejor: ${poblacion[0].aptitud}\t Aptitud promedia: ${promedio}")
-    println("\t\t\t\t Cartas del peor: ${poblacion[poblacion.size-1].cromosoma}")
+        println("${estrellas("****************************************")}")
+        println("\t\t${titulo("Resumen Final")}")
+        println("Rondas tomadas: $rondas")
+        println("Cartas del mejor: ${poblacion[0].cartas}")
+        println("Cartas del peor: ${poblacion[poblacion.size-1].cartas}")
+        println("Aptitud del mejor: ${poblacion[0].aptitud}")
+        println("Aptitud del peor: ${poblacion[poblacion.size-1].aptitud}")
+        println("Aptitud promedia: ${promedio}")
+        println("${estrellas("****************************************")}")
+    })
 }
