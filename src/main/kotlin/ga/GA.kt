@@ -1,4 +1,4 @@
-import ga.Individuo
+package ga
 
 class GA(val tamanioPoblacion: Int = 100, val tasaElitismo: Double = 0.1, val tasaSeleccion: Double = 0.5, val probMutacion: Double = 0.05) {
 

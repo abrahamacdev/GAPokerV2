@@ -1,13 +1,11 @@
 import com.github.ajalt.mordant.TermColors
-import ga.Individuo
-import modelo.Carta
-import modelo.Palo
+import ga.GA
 
 fun main() {
 
     // Revisar 3 cosas:
     // 1º Condicion para que paremos de iterar
-    // 2º Como ordenamos la lista (GA.evolucionar)
+    // 2º Como ordenamos la lista (ga.GA.evolucionar)
     // 3º Funcion de aptitud utilizada
 
 
