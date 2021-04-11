@@ -1,2 +1,2 @@
 # GAPokerV2
-Algoritmo genetico aplicado al poker para averiguar cual es la combinacion de cartas mayor.
+Algoritmo genético aplicado al póker para averiguar cuál es la combinación de cartas mayor.
